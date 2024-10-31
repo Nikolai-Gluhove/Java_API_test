@@ -5,9 +5,9 @@ import io.restassured.response.Response;
 public class HelloWorldTest {
 
     @Test
-    public void testHelloWorld(){
+    public void testRestAssured(){
         Response response = RestAssured
-                .get("https://playground.learnqa.ru/api/get_text")
+                .get("https://playground.learnqa.ru/api/hello")
                 .andReturn();
 
         response.prettyPrint();
