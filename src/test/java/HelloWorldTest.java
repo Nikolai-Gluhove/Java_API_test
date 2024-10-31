@@ -10,21 +10,32 @@ public class HelloWorldTest {
 
     @Test
     public void testRestAssured(){
-        Map<String, String> headers = new HashMap<>();
-        headers.put("muHeader1", "myValue1");
-        headers.put("muHeader2", "myValue2");
+        Map<String, String> date = new HashMap<>();
+        date.put("login", "secret_login2");
+        date.put("password", "secret_pass2");
 
-        Response response = RestAssured
+        Response responseForGet = RestAssured
                 .given()
-                .redirects()
-                .follow(false)
+                .body(date)
                 .when()
-                .get("https://playground.learnqa.ru/api/get_303")
+                .post("https://playground.learnqa.ru/api/get_auth_cookie")
                 .andReturn();
 
-        response.prettyPrint();
+        String responseCookie = responseForGet.getCookie("auth_cookie");
 
-        String locationHeaders = response.getHeader("Location");
-        System.out.println(locationHeaders);
+        Map<String, String> cookies = new HashMap<>();
+        if (responseCookie != null) {
+            cookies.put("auth_cookie", responseCookie);
+        }
+
+        Response responseForCheck = RestAssured
+                .given()
+                .body(date)
+                .cookies(cookies)
+                .when()
+                .post("https://playground.learnqa.ru/api/check_auth_cookie")
+                .andReturn();
+
+        responseForCheck.print();
     }
 }
