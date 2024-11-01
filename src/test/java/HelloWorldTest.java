@@ -7,16 +7,29 @@ public class HelloWorldTest {
 
     @Test
     public void testRestAssured(){
-        Response response = RestAssured
-                .given()
-                .redirects()
-                .follow(false)
-                .when()
-                .get("https://playground.learnqa.ru/api/long_redirect")
-                .andReturn();
+        String URL = "https://playground.learnqa.ru/api/long_redirect";
 
-        String responseLocation = response.getHeader("Location");
-        System.out.println(responseLocation);
+        int counter = 0;
+        Response response;
+        while (true) {
+            response = RestAssured
+                    .given()
+                    .redirects()
+                    .follow(false)
+                    .when()
+                    .get(URL)
+                    .andReturn();
 
+            String responseLocation = response.getHeader("Location");
+
+            if (responseLocation == null){
+                break;
+            }
+            counter++;
+            URL = responseLocation;
+        }
+
+        System.out.println("Count redirect = "+ counter);
+        System.out.println("Endpoint = "+ URL);
     }
 }
