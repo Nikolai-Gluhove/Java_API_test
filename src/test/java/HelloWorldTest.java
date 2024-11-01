@@ -1,35 +1,54 @@
 
-import io.restassured.response.Response;
+import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.Test;
 import io.restassured.RestAssured;
+import java.lang.Thread;
+
 
 public class HelloWorldTest {
 
     @Test
-    public void testRestAssured(){
-        String URL = "https://playground.learnqa.ru/api/long_redirect";
+    public void testRestAssured() throws InterruptedException {
 
-        int counter = 0;
-        Response response;
-        while (true) {
-            response = RestAssured
+        JsonPath jsonFirstResponse = RestAssured
+                .given()
+                .when()
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .jsonPath();
+
+
+        String token = jsonFirstResponse.getString("token");
+        int seconds = jsonFirstResponse.getInt("seconds");
+
+        JsonPath jsonTest;
+        for (int i = 0; i < 2; i++) {
+            jsonTest = RestAssured
                     .given()
-                    .redirects()
-                    .follow(false)
+                    .queryParam("token", token)
                     .when()
-                    .get(URL)
-                    .andReturn();
+                    .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                    .jsonPath();
 
-            String responseLocation = response.getHeader("Location");
+            String status = jsonTest.getString("status");
+            switch (i){
+                case 0:
+                    if (status.equals("Job is NOT ready")){
+                        System.out.println("Status is correct");
+                        Thread.sleep(seconds * 1000);
+                        break;
+                    }
+                    System.out.println("Status is NOT correct");
+                    Thread.sleep(seconds * 1000);
+                    break;
 
-            if (responseLocation == null){
-                break;
+                case 1:
+                    if(status.equals("Job is ready")){
+                        System.out.println("Status is correct");
+                        break;
+                    }
+                    System.out.println("Status is NOT correct");
+                    break;
             }
-            counter++;
-            URL = responseLocation;
         }
-
-        System.out.println("Count redirect = "+ counter);
-        System.out.println("Endpoint = "+ URL);
     }
 }
