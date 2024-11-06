@@ -1,6 +1,11 @@
-import io.restassured.response.Response;
+import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.Test;
 import io.restassured.RestAssured;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -8,25 +13,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HelloWorldTest {
 
-    @Test
-    public void testFor200(){
-       Response response = RestAssured
-               .given()
-               .when()
-               .get("https://playground.learnqa.ru/api/map")
-               .andReturn();
+    @ParameterizedTest
+    @ValueSource(strings = {"", "John", "Nikolai"})
+    public void testHelloMethodWithoutName(String name){
+        Map<String, String> queryParams = new HashMap<>();
 
-       assertEquals(200, response.getStatusCode(), "Unexpected status code");
-    }
+        if (!name.isEmpty()){
+            queryParams.put("name", name);
+        }
 
-    @Test
-    public void testFor404(){
-        Response response = RestAssured
+        JsonPath response = RestAssured
                 .given()
+                .queryParams(queryParams)
                 .when()
-                .get("https://playground.learnqa.ru/api/map2")
-                .andReturn();
+                .get("https://playground.learnqa.ru/api/hello")
+                .jsonPath();
+       String answer = response.getString("answer");
 
-        assertEquals(404, response.getStatusCode(), "Unexpected status code");
+       String expectedName = (!name.isEmpty()) ? name : "someone";
+
+       assertEquals("Hello, " + expectedName, answer, "The answer is not expected");
     }
 }
