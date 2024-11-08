@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import lib.Assertions;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,18 +44,15 @@ public class UserAuthTest extends BaseTestCase {
 
     @Test
     public void testAuthTest(){
-        JsonPath responseCheckAuth = RestAssured
+        Response responseCheckAuth = RestAssured
                 .given()
                 .header("x-csrf-token", this.header)
                 .cookie("auth_sid", this.cookie)
                 .when()
                 .get("https://playground.learnqa.ru/api/user/auth")
-                .jsonPath();
+                .andReturn();
 
-        int userIdOnCheck = responseCheckAuth.getInt("user_id");
-
-        assertTrue(userIdOnCheck > 0, "Unexpected user id " + userIdOnCheck);
-        assertEquals(this.userIdOnAuth, userIdOnCheck, "User id from aut request is not equal to user id from check request");
+        Assertions.assertJsonByName(responseCheckAuth, "user_id", this.userIdOnAuth);
     }
 
     @ParameterizedTest
@@ -70,7 +69,7 @@ public class UserAuthTest extends BaseTestCase {
             throw new IllegalArgumentException("Condition value is known: " + condition);
         }
 
-        JsonPath responseForCheck = spec.get().jsonPath();
-        assertEquals(0, responseForCheck.getInt("user_id"), "User id should be 0 for unauth request");
+        Response responseForCheck = spec.get().andReturn();
+        Assertions.assertJsonByName(responseForCheck, "user_id", 0);
     }
 }
