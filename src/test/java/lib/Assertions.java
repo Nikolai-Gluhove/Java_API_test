@@ -17,4 +17,8 @@ public class Assertions {
     public static void assertStringLength(String message){
         assertTrue(message.length() > 15, "Length message less 15 symbols");
     }
+
+    public static void assertValueCookie(Response Response, String name, String expect){
+        assertEquals(expect, Response.getCookie(name), "The value in cookie doesn't match expect value");
+    }
 }
