@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Assertions {
-    //проверка наличия атрибудат в json
+    //проверка числового атрибудат в json
     public static void assertJsonByName(Response Response, String name, int expectedValue){
         Response.then().assertThat().body("$", hasKey(name));
 
@@ -28,6 +28,10 @@ public class Assertions {
     //проверка значения header
     public static void assertValueHeader(String value, String expect){
         assertEquals(value, expect, "The value in header doesn't match expect value");
+    }
 
+    //Проверка строкового атрибута в json
+    public static void assertValueString(String expectedValue, String value){
+        assertEquals(expectedValue, value, "The value in json doesn't match expect value");
     }
 }
