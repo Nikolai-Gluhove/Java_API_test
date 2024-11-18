@@ -35,4 +35,17 @@ public class DateGenerator {
         }
         return userDate;
     }
+
+    public static Map<String, String> getRegistrationDate(String ignore){
+        Map<String, String> defaultValues = DateGenerator.getRegistrationDate();
+
+        Map<String, String> userDate = new HashMap<>();
+        String[] keys = {"email", "password", "username", "firstName", "lastName"};
+        for (String key: keys){
+            if (!key.equals(ignore)){
+                userDate.put(key, defaultValues.get(key));
+            }
+        }
+        return userDate;
+    }
 }
