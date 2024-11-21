@@ -26,7 +26,7 @@ public class UserGetTest extends BaseTestCase {
         Assertions.assertJsonHasField(responseUserDate, "username");
 
         String[] unexpectedFields = {"firstName", "lastName", "email"};
-        Assertions.assertJsonNasNotFields(responseUserDate, unexpectedFields);
+        Assertions.assertJsonHasNotFields(responseUserDate, unexpectedFields);
     }
 
     //Юзер авторизован
@@ -74,7 +74,7 @@ public class UserGetTest extends BaseTestCase {
        Response responseUserDate = apiCoreRequests.makeGetRequest("https://playground.learnqa.ru/api/user/3", header, cookie);
        String[] expectedFields = {"firstName", "lastName", "email"};
 
-       Assertions.assertJsonNasNotFields(responseUserDate, expectedFields);
+       Assertions.assertJsonHasNotFields(responseUserDate, expectedFields);
 
    }
 }

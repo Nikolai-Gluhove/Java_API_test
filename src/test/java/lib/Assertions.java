@@ -50,7 +50,7 @@ public class Assertions {
         Response.then().assertThat().body("$", not(hasKey(unexpectedFieldName)));
     }
 
-    public static void assertJsonNasNotFields(Response Response, String[] expectedFieldNames){
+    public static void assertJsonHasNotFields(Response Response, String[] expectedFieldNames){
         for (String expectedFieldName : expectedFieldNames){
             Response.then().assertThat().body("$", not(hasKey(expectedFieldName)));
         }

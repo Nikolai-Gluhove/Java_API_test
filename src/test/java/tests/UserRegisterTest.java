@@ -90,7 +90,7 @@ public class UserRegisterTest extends BaseTestCase {
     @Description("This test check the create of a user whit a one-character name")
     @Test
     public void testCreateUserShortName(){
-        String firstName = String.valueOf((char) (random.nextInt(26) + 'a'));
+        String firstName = String.valueOf((random.nextInt(26) + 'a'));
         Map<String, String> userDate = new HashMap<>();
         userDate.put("firstName", firstName);
         userDate = DateGenerator.getRegistrationDate(userDate);
