@@ -5,10 +5,7 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import lib.ApiCoreRequests;
-import lib.Assertions;
-import lib.BaseTestCase;
-import lib.DateGenerator;
+import lib.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,6 +22,9 @@ public class UserRegisterTest extends BaseTestCase {
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
     Random random = new Random();
 
+    private final eDomen domen = eDomen.DEV;
+    private final eUri uri = eUri.USER;
+
     @Test
     public void testCreateUserWithExistingEmail(){
         String email = "vinkotov@example.com";
@@ -37,7 +37,7 @@ public class UserRegisterTest extends BaseTestCase {
                 .given()
                 .body(userDate)
                 .when()
-                .post("https://playground.learnqa.ru/api/user/")
+                .post(domen.getDomen()+uri.getUri())
                 .andReturn();
 
         Assertions.assertResponseCodeEquals(responseCreateAuth, 400);
@@ -53,7 +53,7 @@ public class UserRegisterTest extends BaseTestCase {
                 .given()
                 .body(userDate)
                 .when()
-                .post("https://playground.learnqa.ru/api/user/")
+                .post(domen.getDomen()+uri.getUri())
                 .andReturn();
 
         Assertions.assertResponseCodeEquals(responseCreateAuth, 200);
@@ -68,7 +68,7 @@ public class UserRegisterTest extends BaseTestCase {
        userDate.put("email", "learnqaexample.com");
        userDate = DateGenerator.getRegistrationDate(userDate);
 
-       Response responseCreateUserWithoutSing = apiCoreRequests.makePostRequest("https://playground.learnqa.ru/api/user/", userDate);
+       Response responseCreateUserWithoutSing = apiCoreRequests.makePostRequest(domen.getDomen()+uri.getUri(), userDate);
 
        Assertions.assertResponseTextEquals(responseCreateUserWithoutSing, "Invalid email format");
     }
@@ -80,7 +80,7 @@ public class UserRegisterTest extends BaseTestCase {
     public void testCreateUserWithoutParam(String param){
         Map<String, String> userDate = DateGenerator.getRegistrationDate(param);;
 
-        Response responseWithoutParam = apiCoreRequests.makePostRequest("https://playground.learnqa.ru/api/user/", userDate);
+        Response responseWithoutParam = apiCoreRequests.makePostRequest(domen.getDomen()+uri.getUri(), userDate);
 
         Assertions.assertResponseTextEquals(responseWithoutParam, "The following required params are missed: "+param);
     }
@@ -90,12 +90,12 @@ public class UserRegisterTest extends BaseTestCase {
     @Description("This test check the create of a user whit a one-character name")
     @Test
     public void testCreateUserShortName(){
-        String firstName = String.valueOf((random.nextInt(26) + 'a'));
+        String firstName = "a";
         Map<String, String> userDate = new HashMap<>();
         userDate.put("firstName", firstName);
         userDate = DateGenerator.getRegistrationDate(userDate);
 
-        Response responseWishShortName = apiCoreRequests.makePostRequest("https://playground.learnqa.ru/api/user/", userDate);
+        Response responseWishShortName = apiCoreRequests.makePostRequest(domen.getDomen()+uri.getUri(), userDate);
 
         Assertions.assertResponseCodeEquals(responseWishShortName, 400);
         Assertions.assertResponseTextEquals(responseWishShortName, "The value of 'firstName' field is too short");
@@ -114,7 +114,7 @@ public class UserRegisterTest extends BaseTestCase {
         userDate.put("firstName", firstName);
         userDate = DateGenerator.getRegistrationDate(userDate);
 
-        Response responseWithLongName = apiCoreRequests.makePostRequest("https://playground.learnqa.ru/api/user/", userDate);
+        Response responseWithLongName = apiCoreRequests.makePostRequest(domen.getDomen()+uri.getUri(), userDate);
 
         Assertions.assertResponseCodeEquals(responseWithLongName, 400);
         Assertions.assertResponseTextEquals(responseWithLongName, "The value of 'firstName' field is too long");

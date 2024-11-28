@@ -2,17 +2,13 @@ package tests;
 
 import io.qameta.allure.Description;
 import io.restassured.response.Response;
-import lib.ApiCoreRequests;
-import lib.Assertions;
-import lib.BaseTestCase;
-import lib.DateGenerator;
+import lib.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 public class UserEditTest extends BaseTestCase {
 
@@ -21,12 +17,16 @@ public class UserEditTest extends BaseTestCase {
     Map<String, String> userDate = DateGenerator.getRegistrationDate();
     Map<String, String> authDate = new HashMap<>();
     String userId;
-    Response responseGetAuth = apiCoreRequests.makePostRequest("https://playground.learnqa.ru/api/user/login", this.authDate);
+
+    Response responseGetAuth;
+    private final eDomen domen = eDomen.DEV;
+    private final eUri uriUser = eUri.USER;
+    private final eUri uriLogs = eUri.LogsUSER;
 
     //Generate user
     @BeforeEach
     public void generateUser(){
-        Response responseUserDate = apiCoreRequests.makePostRequest("https://playground.learnqa.ru/api/user/", this.userDate);
+        Response responseUserDate = apiCoreRequests.makePostRequest(domen.getDomen()+ uriUser.getUri(), this.userDate);
         this.userId = this.getStringFromJson(responseUserDate, "id");
 
         this.authDate.put("email", this.userDate.get("email"));
@@ -35,7 +35,7 @@ public class UserEditTest extends BaseTestCase {
 
     //Login
     private void login(){
-        this.responseGetAuth = apiCoreRequests.makePostRequest("https://playground.learnqa.ru/api/user/login", this.authDate);
+        this.responseGetAuth = apiCoreRequests.makePostRequest(domen.getDomen()+uriLogs.getUri(), this.authDate);
     }
 
     @Test
@@ -51,14 +51,14 @@ public class UserEditTest extends BaseTestCase {
         editDate.put("firstName", newName);
 
         Response responseEditUser = apiCoreRequests.makePutRequest(
-                "https://playground.learnqa.ru/api/user/"+userId,
+                domen.getDomen()+ uriUser.getUri()+userId,
                 editDate,
                 this.getHeader(this.responseGetAuth, "x-csrf-token"),
                 this.getCookie(this.responseGetAuth, "auth_sid"));
 
         //GET
         Response responseUserDate = apiCoreRequests.makeGetRequest(
-                "https://playground.learnqa.ru/api/user/"+userId,
+                domen.getDomen()+ uriUser.getUri()+userId,
                 this.getHeader(this.responseGetAuth, "x-csrf-token"),
                 this.getCookie(this.responseGetAuth, "auth_sid"));
 
@@ -75,7 +75,7 @@ public class UserEditTest extends BaseTestCase {
         editDate.put("firstName", newName);
 
         Response responseEditWithoutAuth = apiCoreRequests.makePutRequest(
-                "https://playground.learnqa.ru/api/user/"+userId,
+                domen.getDomen()+ uriUser.getUri()+userId,
                 editDate);
 
         //ASSERT
@@ -92,7 +92,7 @@ public class UserEditTest extends BaseTestCase {
         //CREATE NEW USER
         Map<String, String> newUserDade = new HashMap<>();
         newUserDade = DateGenerator.getRegistrationDate();
-        Response responseUserDate = apiCoreRequests.makePostRequest("https://playground.learnqa.ru/api/user/", newUserDade);
+        Response responseUserDate = apiCoreRequests.makePostRequest(domen.getDomen()+ uriUser.getUri(), newUserDade);
         String newUserId = this.getStringFromJson(responseUserDate, "id");
 
         //EDIT
@@ -100,7 +100,7 @@ public class UserEditTest extends BaseTestCase {
         editDate.put("firstName", "Changed Name with authorization another user's");
 
         Response responseEditUser = apiCoreRequests.makePutRequest(
-                "https://playground.learnqa.ru/api/user/"+newUserId,
+                domen.getDomen()+ uriUser.getUri()+newUserId,
                 editDate,
                 this.getHeader(this.responseGetAuth, "x-csrf-token"),
                 this.getCookie(this.responseGetAuth, "auth_sid"));
@@ -121,7 +121,7 @@ public class UserEditTest extends BaseTestCase {
         editDate.put("email", "newEmailexample.com");
 
         Response responseEditUser = apiCoreRequests.makePutRequest(
-                "https://playground.learnqa.ru/api/user/"+userId,
+                domen.getDomen()+ uriUser.getUri()+userId,
                 editDate,
                 this.getHeader(this.responseGetAuth, "x-csrf-token"),
                 this.getCookie(this.responseGetAuth, "auth_sid"));
@@ -142,7 +142,7 @@ public class UserEditTest extends BaseTestCase {
         editDate.put("firstName", "a");
 
         Response responseEditUser = apiCoreRequests.makePutRequest(
-                "https://playground.learnqa.ru/api/user/"+userId,
+                domen.getDomen()+ uriUser.getUri()+userId,
                 editDate,
                 this.getHeader(this.responseGetAuth, "x-csrf-token"),
                 this.getCookie(this.responseGetAuth, "auth_sid"));

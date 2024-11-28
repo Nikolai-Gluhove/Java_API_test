@@ -2,10 +2,7 @@ package tests;
 
 import io.qameta.allure.Description;
 import io.restassured.response.Response;
-import lib.ApiCoreRequests;
-import lib.Assertions;
-import lib.BaseTestCase;
-import lib.DateGenerator;
+import lib.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +12,9 @@ import java.util.Map;
 public class UserDeleteTest extends BaseTestCase {
 
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
+    private final eDomen domen = eDomen.DEV;
+    private final eUri uriUser = eUri.USER;
+    private final eUri uriLogs = eUri.LogsUSER;
 
     @Test
     @DisplayName("Delete user with id = 2")
@@ -28,7 +28,7 @@ public class UserDeleteTest extends BaseTestCase {
 
         //delete
         Response responseDelete = apiCoreRequests.makeDeleteRequest(
-                "https://playground.learnqa.ru/api/user/2",
+                domen.getDomen()+ uriUser.getUri()+"2",
                 this.getHeader(responseAuth, "x-csrf-token"),
                 this.getCookie(responseAuth, "auth_sid"));
 
@@ -52,7 +52,7 @@ public class UserDeleteTest extends BaseTestCase {
 
         //delete
         Response responseDelete = apiCoreRequests.makeDeleteRequest(
-                "https://playground.learnqa.ru/api/user/"+userDate.get("id"),
+                domen.getDomen()+ uriUser.getUri()+userDate.get("id"),
                 this.getHeader(responseAuth, "x-csrf-token"),
                 this.getCookie(responseAuth, "auth_sid"));
 
@@ -77,7 +77,7 @@ public class UserDeleteTest extends BaseTestCase {
 
         //delete
         Response responseDelete = apiCoreRequests.makeDeleteRequest(
-                "https://playground.learnqa.ru/api/user/"+secondUserDate.get("id"),
+                domen.getDomen()+ uriUser.getUri()+secondUserDate.get("id"),
                 this.getHeader(responseAuth, "x-csrf-token"),
                 this.getCookie(responseAuth, "auth_sid"));
 
@@ -88,14 +88,14 @@ public class UserDeleteTest extends BaseTestCase {
 
     //Logs
     private Response logs(Map<String, String> userAuth){
-        Response responseAuth = apiCoreRequests.makePostRequest("https://playground.learnqa.ru/api/user/login", userAuth);
+        Response responseAuth = apiCoreRequests.makePostRequest(domen.getDomen()+uriLogs.getUri(), userAuth);
         return responseAuth;
     }
 
     //Create user
     private Map<String, String> createUser(){
         Map<String, String> userDate = DateGenerator.getRegistrationDate();
-        Response responseUserDate = apiCoreRequests.makePostRequest("https://playground.learnqa.ru/api/user/", userDate);
+        Response responseUserDate = apiCoreRequests.makePostRequest(domen.getDomen()+uriUser.getUri(), userDate);
         userDate.put("id", this.getStringFromJson(responseUserDate, "id"));
         return userDate;
     }

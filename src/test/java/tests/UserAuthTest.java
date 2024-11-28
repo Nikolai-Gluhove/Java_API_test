@@ -3,18 +3,13 @@ package tests;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
-import lib.ApiCoreRequests;
-import lib.BaseTestCase;
+import lib.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import lib.Assertions;
 
 
 import java.util.HashMap;
@@ -28,6 +23,11 @@ public class UserAuthTest extends BaseTestCase {
     int userIdOnAuth;
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
 
+    private final eDomen domen = eDomen.DEV;
+    private final eUri uriLogs = eUri.LogsUSER;
+    private final eUri uriAuth = eUri.AuthUSER;
+
+
     @BeforeEach
     public void loginUser(){
         Map<String, String> authDate = new HashMap<>();
@@ -35,7 +35,7 @@ public class UserAuthTest extends BaseTestCase {
         authDate.put("password", "1234");
 
         Response responseGetAuth = apiCoreRequests.makePostRequest(
-                "https://playground.learnqa.ru/api/user/login",
+                domen.getDomen()+ uriLogs.getUri(),
                 authDate);
 
         this.cookie = this.getCookie(responseGetAuth, "auth_sid");
@@ -48,9 +48,9 @@ public class UserAuthTest extends BaseTestCase {
     @DisplayName("Test positive auth user")
     public void testAuthTest(){
         Response responseCheckAuth = apiCoreRequests.makeGetRequest(
-                "https://playground.learnqa.ru/api/user/auth",
-                        this.header,
-                        this.cookie);
+                domen.getDomen()+uriAuth.getUri(),
+                this.header,
+                this.cookie);
 
         Assertions.assertJsonByName(responseCheckAuth, "user_id", this.userIdOnAuth);
     }
@@ -63,12 +63,12 @@ public class UserAuthTest extends BaseTestCase {
 
         if(condition.equals("cookie")){
             Response responseForCheck = apiCoreRequests.makeGetRequestWitCookie(
-                    "https://playground.learnqa.ru/api/user/auth",
+                    domen.getDomen()+uriAuth.getUri(),
                     this.cookie);
             Assertions.assertJsonByName(responseForCheck, "user_id", 0);
         } else if (condition.equals("headers")){
             Response responseForCheck = apiCoreRequests.makeGetRequestWithToken(
-                    "https://playground.learnqa.ru/api/user/auth",
+                    domen.getDomen()+uriAuth.getUri(),
                     this.header);
             Assertions.assertJsonByName(responseForCheck, "user_id", 0);
         } else {

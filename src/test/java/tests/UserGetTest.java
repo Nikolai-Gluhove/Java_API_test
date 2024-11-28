@@ -3,9 +3,7 @@ package tests;
 import io.qameta.allure.Description;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import lib.ApiCoreRequests;
-import lib.Assertions;
-import lib.BaseTestCase;
+import lib.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,11 +14,16 @@ public class UserGetTest extends BaseTestCase {
 
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
 
+    private final eDomen domen = eDomen.DEV;
+    private final eUri uriUser = eUri.USER;
+    private final eUri uriLogs = eUri.LogsUSER;
+
+
     //Юзер не авторизован
     @Test
     public void testGetUserDateNotAuth(){
         Response responseUserDate = RestAssured
-                .get("https://playground.learnqa.ru/api/user/2")
+                .get(domen.getDomen()+ uriUser.getUri()+"2")
                 .andReturn();
 
         Assertions.assertJsonHasField(responseUserDate, "username");
@@ -39,7 +42,7 @@ public class UserGetTest extends BaseTestCase {
         Response responseGetAuth = RestAssured
                 .given()
                 .body(authDate)
-                .post("https://playground.learnqa.ru/api/user/login")
+                .post(domen.getDomen()+uriLogs.getUri())
                 .andReturn();
 
 
@@ -50,7 +53,7 @@ public class UserGetTest extends BaseTestCase {
                 .given()
                 .header("x-csrf-token", header)
                 .cookie("auth_sid", cookie)
-                .get("https://playground.learnqa.ru/api/user/2")
+                .get(domen.getDomen()+ uriUser.getUri()+"2")
                 .andReturn();
 
         String[] expectedFields = {"username", "firstName", "lastName", "email"};
@@ -66,12 +69,12 @@ public class UserGetTest extends BaseTestCase {
        authDate.put("email", "vinkotov@example.com");
        authDate.put("password", "1234");
 
-       Response responseGetAuth = apiCoreRequests.makePostRequest("https://playground.learnqa.ru/api/user/login", authDate);
+       Response responseGetAuth = apiCoreRequests.makePostRequest(domen.getDomen()+uriLogs.getUri(), authDate);
 
        String header = this.getHeader(responseGetAuth, "x-csrf-token");
        String cookie = this.getCookie(responseGetAuth, "auth_sid");
 
-       Response responseUserDate = apiCoreRequests.makeGetRequest("https://playground.learnqa.ru/api/user/3", header, cookie);
+       Response responseUserDate = apiCoreRequests.makeGetRequest(domen.getDomen()+uriUser.getUri()+"3", header, cookie);
        String[] expectedFields = {"firstName", "lastName", "email"};
 
        Assertions.assertJsonHasNotFields(responseUserDate, expectedFields);
