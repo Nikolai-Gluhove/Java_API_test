@@ -1,8 +1,6 @@
 package tests;
 
-import io.qameta.allure.Description;
-import io.qameta.allure.Epic;
-import io.qameta.allure.Feature;
+import io.qameta.allure.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.*;
@@ -45,6 +43,7 @@ public class UserRegisterTest extends BaseTestCase {
     }
 
     @Test
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateUserSuccessfully(){
         Map<String, String> userDate = new HashMap<>();
         userDate = DateGenerator.getRegistrationDate();
@@ -63,6 +62,7 @@ public class UserRegisterTest extends BaseTestCase {
     @Test
     @Description("This test check create user without sing")
     @DisplayName("Create user without sing")
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateUserWithoutSing(){
        Map<String, String> userDate = new HashMap<>();
        userDate.put("email", "learnqaexample.com");
@@ -77,6 +77,7 @@ public class UserRegisterTest extends BaseTestCase {
     @Description("This test check create user without one param")
     @ParameterizedTest()
     @ValueSource(strings = {"username", "firstName", "lastName", "email", "password"})
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateUserWithoutParam(String param){
         Map<String, String> userDate = DateGenerator.getRegistrationDate(param);;
 
@@ -89,6 +90,7 @@ public class UserRegisterTest extends BaseTestCase {
     @DisplayName("Create a user with a short name")
     @Description("This test check the create of a user whit a one-character name")
     @Test
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateUserShortName(){
         String firstName = "a";
         Map<String, String> userDate = new HashMap<>();
@@ -104,6 +106,7 @@ public class UserRegisterTest extends BaseTestCase {
     @DisplayName("Create a user with a long name")
     @Description("This test check the create of a user with a 250-character name")
     @Test
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateWithLongName(){
         String firstName = "";
         for (int i = 0; i < 251; i++){

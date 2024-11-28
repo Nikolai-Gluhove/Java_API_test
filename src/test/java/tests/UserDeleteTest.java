@@ -1,6 +1,8 @@
 package tests;
 
 import io.qameta.allure.Description;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
 import io.restassured.response.Response;
 import lib.*;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +21,7 @@ public class UserDeleteTest extends BaseTestCase {
     @Test
     @DisplayName("Delete user with id = 2")
     @Description("This test tries to delete the user with id = 2")
+    @Severity(SeverityLevel.MINOR)
     public void testDeleteUser2(){
         //logs
         Map<String, String> userAuth = new HashMap<>();
@@ -40,6 +43,7 @@ public class UserDeleteTest extends BaseTestCase {
     @Test
     @DisplayName("Delete user with authorization")
     @Description("This test creates a user, logs in as him and to delete it")
+    @Severity(SeverityLevel.NORMAL)
     public void testDeleteUserWithAuthorization(){
         //create
        Map<String, String> userDate = createUser();
@@ -64,6 +68,7 @@ public class UserDeleteTest extends BaseTestCase {
     @Test
     @DisplayName("Delete user without authorization")
     @Description("This test creates two users, logs in as first and to delete second")
+    @Severity(SeverityLevel.CRITICAL)
     public void testDeleteUserWithoutAuthorization(){
         //create
         Map<String, String> firstUserDate = createUser();

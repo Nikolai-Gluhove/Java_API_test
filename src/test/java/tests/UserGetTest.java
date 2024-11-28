@@ -1,6 +1,8 @@
 package tests;
 
 import io.qameta.allure.Description;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.*;
@@ -21,6 +23,7 @@ public class UserGetTest extends BaseTestCase {
 
     //Юзер не авторизован
     @Test
+    @Severity(SeverityLevel.NORMAL)
     public void testGetUserDateNotAuth(){
         Response responseUserDate = RestAssured
                 .get(domen.getDomen()+ uriUser.getUri()+"2")
@@ -34,6 +37,7 @@ public class UserGetTest extends BaseTestCase {
 
     //Юзер авторизован
     @Test
+    @Severity(SeverityLevel.NORMAL)
     public void testGetUserDetailAuthAsSameUser(){
         Map<String, String> authDate = new HashMap<>();
         authDate.put("email", "vinkotov@example.com");
@@ -64,6 +68,7 @@ public class UserGetTest extends BaseTestCase {
    @DisplayName("Get another user's date")
    @Description("This test check the date another user")
    @Test
+   @Severity(SeverityLevel.NORMAL)
    public void testGetAntherUserDate(){
        Map<String, String> authDate = new HashMap<>();
        authDate.put("email", "vinkotov@example.com");

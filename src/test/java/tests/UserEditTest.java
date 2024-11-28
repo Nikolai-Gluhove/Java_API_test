@@ -1,6 +1,8 @@
 package tests;
 
 import io.qameta.allure.Description;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
 import io.restassured.response.Response;
 import lib.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +43,7 @@ public class UserEditTest extends BaseTestCase {
     @Test
     @DisplayName("This positive test check the user's editing")
     @Description("This test is logged by the user, changes firstName and verifies the changes made")
+    @Severity(SeverityLevel.NORMAL)
     public void testEditJustCreatedTest(){
         //LOGIN
         login();
@@ -69,6 +72,7 @@ public class UserEditTest extends BaseTestCase {
     @Test
     @DisplayName("This test check editing the user's without authorization")
     @Description("This test attempts to change user data while not logged in")
+    @Severity(SeverityLevel.CRITICAL)
     public void testEditWithoutAuth(){
         String newName = "Changed Name without authorization";
         Map<String, String> editDate = new HashMap<>();
@@ -85,6 +89,7 @@ public class UserEditTest extends BaseTestCase {
     @Test
     @DisplayName("Testing editing users with authorization another user's")
     @Description("This test logs into the system, create a new user and attempts to change user with incorrect authorization")
+    @Severity(SeverityLevel.CRITICAL)
     public void testEditAnotherUser(){
         //LOGIN
         login();
@@ -112,6 +117,7 @@ public class UserEditTest extends BaseTestCase {
     @Test
     @DisplayName("Test the email changed to incorrect")
     @Description("This test attempts changed email of user to email without @")
+    @Severity(SeverityLevel.MINOR)
     public void testEditNotCorrectEmail(){
         //LOGIN
         login();
@@ -133,6 +139,7 @@ public class UserEditTest extends BaseTestCase {
     @Test
     @DisplayName("Check editing the firstName by one symbol")
     @Description("This test attempts change firstName of user's by on symbol")
+    @Severity(SeverityLevel.MINOR)
     public void testEditOneSymbolName(){
         //LOGIN
         login();
